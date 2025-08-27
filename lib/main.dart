@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tmdbapp/views/home_page.dart';
+import 'package:tmdbapp/views/mainpage.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      home: MainPage(),
     );
   }
 }
