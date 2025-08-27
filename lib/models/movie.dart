@@ -9,12 +9,16 @@ class Movie {
   @JsonKey(name: "poster_path")
   final String? posterPath;
   final String? overview;
+  final String? original_language;
+  final String? release_date;
 
   Movie({
     required this.id,
     required this.title,
     this.posterPath,
     this.overview,
+    this.original_language,
+    this.release_date,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);

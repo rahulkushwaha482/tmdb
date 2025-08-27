@@ -12,6 +12,7 @@ class MovieRepository {
 
   Future<List<Movie>> getTrendingMovies() async {
     final response = await apiClient.getTrendingMovies(Constant.apiKey);
+    print(response.toJson());
     return response.results;
   }
 
