@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tmdbapp/core/constant.dart';
@@ -56,8 +57,12 @@ class SavedPage extends ConsumerWidget {
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    "${Constant.imageBaseUrl}${movie.posterPath}",
+                  child: CachedNetworkImage(
+                    imageUrl: "${Constant.imageBaseUrl}${movie.posterPath}",
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                     fit: BoxFit.cover,
                   ),
                 ),

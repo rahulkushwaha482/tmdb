@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tmdbapp/core/constant.dart';
@@ -41,8 +42,8 @@ class MovieDetailsPage extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(
                     20,
                   ), // radius for all corners
-                  child: Image.network(
-                    "${Constant.imageBaseUrl}${movie.posterPath}",
+                  child: CachedNetworkImage(
+                    imageUrl: "${Constant.imageBaseUrl}${movie.posterPath}",
                     height: 250,
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
@@ -127,8 +128,8 @@ class MovieDetailsPage extends ConsumerWidget {
                           SnackBar(
                             content: Text(
                               isBookmarked
-                                  ? "Bookmarked!"
-                                  : "Removed from bookmarks!",
+                                  ? "Removed from bookmarks!"
+                                  : "Bookmarked",
                             ),
                           ),
                         );
