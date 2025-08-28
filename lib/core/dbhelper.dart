@@ -1,5 +1,5 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._();
@@ -19,18 +19,46 @@ class DBHelper {
     final path = join(await getDatabasesPath(), "movies.db");
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // bump version so schema updates!
       onCreate: (db, version) async {
         await db.execute("""
           CREATE TABLE bookmarks (
             id INTEGER PRIMARY KEY,
             title TEXT,
-            posterPath TEXT,
+            poster_path TEXT,
             overview TEXT,
             original_language TEXT,
             release_date TEXT
           )
         """);
+
+        await db.execute("""
+          CREATE TABLE movies (
+            id INTEGER PRIMARY KEY,
+            title TEXT,
+            poster_path TEXT,
+            overview TEXT,
+            original_language TEXT,
+            release_date TEXT,
+            category TEXT
+          )
+        """);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // Run migrations here
+        if (oldVersion < 2) {
+          await db.execute("""
+            CREATE TABLE movies (
+              id INTEGER PRIMARY KEY,
+              title TEXT,
+              poster_path TEXT,
+              overview TEXT,
+              original_language TEXT,
+              release_date TEXT,
+              category TEXT
+            )
+          """);
+        }
       },
     );
   }

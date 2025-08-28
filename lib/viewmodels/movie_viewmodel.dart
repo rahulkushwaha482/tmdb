@@ -55,3 +55,11 @@ final nowPlayingMoviesProvider =
     StateNotifierProvider<NowPlayingMoviesViewModel, AsyncValue<List<Movie>>>(
       (ref) => NowPlayingMoviesViewModel(ref.watch(movieRepositoryProvider)),
     );
+
+final searchMoviesProvider = FutureProvider.family<List<Movie>, String>((
+  ref,
+  query,
+) async {
+  final repo = ref.read(movieRepositoryProvider);
+  return repo.searchMovies(query);
+});
