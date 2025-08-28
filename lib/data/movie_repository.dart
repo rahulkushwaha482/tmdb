@@ -12,7 +12,6 @@ class MovieRepository {
 
   Future<List<Movie>> getTrendingMovies() async {
     final response = await apiClient.getTrendingMovies(Constant.apiKey);
-    print(response.toJson());
     return response.results;
   }
 
@@ -30,4 +29,5 @@ class MovieRepository {
       await movieDao.insertMovie(movie);
   Future<List<Movie>> getBookmarks() async => await movieDao.getAllMovies();
   Future<void> removeMovie(int id) async => await movieDao.deleteMovie(id);
+  Future<bool> isBookmarked(int id) async => await movieDao.isBookmarked(id);
 }

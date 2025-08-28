@@ -26,7 +26,9 @@ class DBHelper {
             id INTEGER PRIMARY KEY,
             title TEXT,
             posterPath TEXT,
-            overview TEXT
+            overview TEXT,
+            original_language TEXT,
+            release_date TEXT
           )
         """);
       },

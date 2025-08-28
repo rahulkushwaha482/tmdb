@@ -1,35 +1,57 @@
+// Trending ViewModel
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tmdbapp/core/api_client.dart';
 import 'package:tmdbapp/data/movie_doa.dart';
-import '../data/movie_repository.dart';
-import '../models/movie.dart';
+import 'package:tmdbapp/data/movie_repository.dart';
+import 'package:tmdbapp/models/movie.dart';
 
-class MovieViewModel extends StateNotifier<AsyncValue<List<Movie>>> {
+class TrendingMoviesViewModel extends StateNotifier<AsyncValue<List<Movie>>> {
   final MovieRepository repository;
-
-  MovieViewModel(this.repository) : super(const AsyncValue.loading()) {
-    loadMovies();
+  TrendingMoviesViewModel(this.repository) : super(const AsyncValue.loading()) {
+    loadTrending();
   }
 
-  Future<void> loadMovies() async {
+  Future<void> loadTrending() async {
     try {
-      final trending = await repository.getTrendingMovies();
-      state = AsyncValue.data(trending);
+      final movies = await repository.getTrendingMovies();
+      state = AsyncValue.data(movies);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 }
 
-final movieViewModelProvider =
-    StateNotifierProvider<MovieViewModel, AsyncValue<List<Movie>>>((ref) {
-      final repo = ref.watch(movieRepositoryProvider);
-      return MovieViewModel(repo);
-    });
+// Now Playing ViewModel
+class NowPlayingMoviesViewModel extends StateNotifier<AsyncValue<List<Movie>>> {
+  final MovieRepository repository;
+  NowPlayingMoviesViewModel(this.repository)
+    : super(const AsyncValue.loading()) {
+    loadNowPlaying();
+  }
+
+  Future<void> loadNowPlaying() async {
+    try {
+      final movies = await repository.getNowPlayingMovies();
+      state = AsyncValue.data(movies);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
 
 final movieRepositoryProvider = Provider<MovieRepository>((ref) {
   final dio = Dio();
   final client = ApiClient(dio);
   return MovieRepository(client, MovieDao());
 });
+
+final trendingMoviesProvider =
+    StateNotifierProvider<TrendingMoviesViewModel, AsyncValue<List<Movie>>>(
+      (ref) => TrendingMoviesViewModel(ref.watch(movieRepositoryProvider)),
+    );
+
+final nowPlayingMoviesProvider =
+    StateNotifierProvider<NowPlayingMoviesViewModel, AsyncValue<List<Movie>>>(
+      (ref) => NowPlayingMoviesViewModel(ref.watch(movieRepositoryProvider)),
+    );

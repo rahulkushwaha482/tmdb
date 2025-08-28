@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tmdbapp/core/constant.dart';
 import 'package:tmdbapp/models/movie.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tmdbapp/viewmodels/bookmarkviewmodel.dart';
 import 'package:tmdbapp/viewmodels/movie_viewmodel.dart';
 
 class MovieDetailsPage extends ConsumerWidget {
@@ -13,6 +14,7 @@ class MovieDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repo = ref.watch(movieRepositoryProvider);
+    final bookmarks = ref.watch(bookmarkProvider);
 
     return Scaffold(
       // appBar: AppBar(
@@ -83,25 +85,57 @@ class MovieDetailsPage extends ConsumerWidget {
                 style: TextStyle(fontSize: 15, fontStyle: FontStyle.normal),
               ),
             ),
+
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 10,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.share),
-                  onPressed: () {
-                    Share.share(
-                      "Check out this movie: ${movie.title} - fakeapp://movie/${movie.id}",
-                    );
-                  },
+                Column(
+                  spacing: 2,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      onPressed: () {
+                        Share.share(
+                          "Check out this movie: ${movie.title} - fakeapp://movie/${movie.id}",
+                        );
+                      },
+                    ),
+                    Text('Share'),
+                  ],
                 ),
 
-                IconButton(
-                  icon: const Icon(Icons.share),
-                  onPressed: () async {
-                    await repo.saveMovie(movie);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Bookmarked!")),
-                    );
-                  },
+                Column(
+                  spacing: 2,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        bookmarks.any((m) => m.id == movie.id)
+                            ? Icons.bookmark
+                            : Icons.bookmark_border,
+                      ),
+                      onPressed: () {
+                        ref
+                            .read(bookmarkProvider.notifier)
+                            .toggleBookmark(movie);
+
+                        final isBookmarked = ref
+                            .read(bookmarkProvider.notifier)
+                            .isBookmarked(movie.id);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isBookmarked
+                                  ? "Bookmarked!"
+                                  : "Removed from bookmarks!",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Text('Bookmark'),
+                  ],
                 ),
               ],
             ),
